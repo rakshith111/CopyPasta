@@ -6,6 +6,13 @@ import os
 from ui_generated.basic import Ui_CopyPasta
 from add_widget import AddEditDialog
 class MainWindow(QMainWindow, Ui_CopyPasta):
+    '''
+    Main window of the application.
+
+    Args:
+        QMainWindow (QMainWindow): Main window class.
+        Ui_CopyPasta (Ui_CopyPasta): Generated UI class.
+    '''    
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -25,18 +32,23 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
 
 
     def show_add_dialog(self):
+        '''
+        Shows the add dialog.
+        '''        
         dialog = AddEditDialog(self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             item_name, field_value = dialog.get_item_data()
             if not item_name.strip() and not field_value.strip():
                 QMessageBox.critical(self, "Invalid Input", "Item name and field value cannot be empty.")
-               
                 self.show_add_dialog()
             else:
                 self.create_form_entry(item_name, field_value)
                 self.save_data()
 
     def show_edit_dialog(self):
+        '''
+        Shows the edit dialog.
+        '''        
         dialog = AddEditDialog(self)
         dialog.setWindowTitle("Edit Item")
         selected_frame = self.focusWidget().parent()
@@ -56,7 +68,14 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
                 item_info_text_edit.setPlainText(field_value)
                 self.save_data()
 
-    def create_form_entry(self, item_name, field_value):
+    def create_form_entry(self, item_name: str, field_value: str)->None:
+        '''
+        Creates a new form entry.
+
+        Args:
+            item_name (str): Name of the item.
+            field_value (str): Value of the item.
+        '''        
         new_frame = QFrame(parent=self.scrollAreaWidgetContents)
         new_frame.setMinimumSize(self.basic_frame_template.minimumSize())
         new_frame.setMaximumSize(self.basic_frame_template.maximumSize())
@@ -111,6 +130,9 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         self.scrollable.addWidget(new_frame)
 
     def delete_entry(self):
+        '''
+        Deletes the selected entry.
+        '''        
         
         sender = self.sender()
         entry = sender.parent()
@@ -123,6 +145,9 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
             self.save_data()
 
     def copy_entry_to_clipboard(self):
+        '''
+        Copies the selected entry to the clipboard.
+        '''        
 
         sender = self.sender()
         entry = sender.parent()
@@ -131,6 +156,9 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         print("Copied to clipboard")
 
     def save_data(self):
+        '''
+        Saves the data to the data file.
+        '''        
         data = []
 
         if len(self.frames)>=1:
@@ -151,8 +179,10 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
                 json.dump(data, file, indent=4)
 
             
-
     def load_data(self):
+        '''
+        Loads the data from the data file.
+        '''        
         try:
             with open(self.data_file, "r") as file:
                 data = json.load(file)

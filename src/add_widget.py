@@ -2,6 +2,11 @@ from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QTextEdit, 
 
 class AddEditDialog(QDialog):
     def __init__(self, parent=None):
+        '''
+        Simple dialog to add or edit an item in the list.
+        Args:
+            parent (_type_, optional):  Defaults to None.
+        '''        
         super().__init__(parent)
         self.setWindowTitle("Add/Edit Item")
         self.layout = QVBoxLayout(self)
