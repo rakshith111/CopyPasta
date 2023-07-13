@@ -1,19 +1,70 @@
-from PyQt6.QtWidgets import QMainWindow, QApplication, QFrame, QLabel, QTextEdit, QPushButton, QGridLayout
+from PyQt6.QtWidgets import QMainWindow, QApplication, QFrame, QLabel, QTextEdit, QPushButton, QGridLayout, QDialog, QVBoxLayout, QDialogButtonBox, QLineEdit
 from ui_generated.basic import Ui_CopyPasta
+from PyQt6 import QtWidgets
+class AddEditDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Add/Edit Item")
+        self.layout = QVBoxLayout(self)
+        self.item_name_label = QLabel("Item Name:", self)
+        self.item_name_input = QLineEdit(self)
+        self.field_value_label = QLabel("Field Value:", self)
+        self.field_value_input = QTextEdit(self)
+        self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel, self)
 
-        
+        self.layout.addWidget(self.item_name_label)
+        self.layout.addWidget(self.item_name_input)
+        self.layout.addWidget(self.field_value_label)
+        self.layout.addWidget(self.field_value_input)
+        self.layout.addWidget(self.button_box)
+
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+
+    def get_item_data(self):
+        item_name = self.item_name_input.text()
+        field_value = self.field_value_input.toPlainText()
+        return item_name, field_value
+
 class MainWindow(QMainWindow, Ui_CopyPasta):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.add_field.clicked.connect(self.duplicate_form)
+        self.add_field.clicked.connect(self.show_add_dialog)
+        self.edit.clicked.connect(self.show_edit_dialog)
+        self.item_info.setReadOnly(True)
+        self.delete.setDisabled(True)
+        self.copy.clicked.connect(self.copy_entry_to_clipboard)
         self.clipboard = QApplication.clipboard()
 
+    def show_add_dialog(self):
+        dialog = AddEditDialog(self)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            item_name, field_value = dialog.get_item_data()
+            self.create_form_entry(item_name, field_value)
+
+    def show_edit_dialog(self):
+        dialog = AddEditDialog(self)
+        dialog.setWindowTitle("Edit Item")
+        selected_frame = self.focusWidget().parent()
+        item_name_label = selected_frame.findChild(QLabel, "item_name")
+        item_info_text_edit = selected_frame.findChild(QTextEdit, "item_info")
+        dialog.item_name_input.setText(item_name_label.text())
+        dialog.field_value_input.setPlainText(item_info_text_edit.toPlainText())
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            item_name, field_value = dialog.get_item_data()
+            print(item_name, field_value)
+            print("a")
+            if not item_name.strip() and not field_value.strip():
+                QtWidgets.QMessageBox.critical(self, "Invalid Input", "Item name and field value cannot be empty.")
+                # reopens the dialog
+                self.show_edit_dialog()
+            else:
+                item_name_label.setText(item_name)
+                item_info_text_edit.setPlainText(field_value)
 
 
-
-    def duplicate_form(self):
-        # Create a new form entry
+    def create_form_entry(self, item_name, field_value):
         new_frame = QFrame(parent=self.scrollAreaWidgetContents)
         new_frame.setMinimumSize(self.basic_frame_template.minimumSize())
         new_frame.setMaximumSize(self.basic_frame_template.maximumSize())
@@ -22,59 +73,67 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
 
         layout = QGridLayout(new_frame)
 
-        item_name = QLabel(parent=new_frame)
-        item_name.setMaximumSize(self.item_name.maximumSize())
-        item_name.setObjectName("item_name")
-        item_name.setText("item_name")
-        layout.addWidget(item_name, 0, 0)
+        item_name_label = QLabel(parent=new_frame)
+        item_name_label.setMaximumSize(self.item_name.maximumSize())
+        item_name_label.setObjectName("item_name")
+        item_name_label.setText(item_name)
+        layout.addWidget(item_name_label, 0, 0)
 
-        item_info = QTextEdit(parent=new_frame)
-        item_info.setMinimumSize(self.item_info.minimumSize())
-        item_info.setMaximumSize(self.item_info.maximumSize())
-        item_info.setObjectName("item_info")
-        item_info.isReadOnly(True)
-        layout.addWidget(item_info, 1, 0)
+        item_info_text_edit = QTextEdit(parent=new_frame)
+        item_info_text_edit.setMinimumSize(self.item_info.minimumSize())
+        item_info_text_edit.setMaximumSize(self.item_info.maximumSize())
+        item_info_text_edit.setObjectName("item_info")
+        item_info_text_edit.setPlainText(field_value)
+        item_info_text_edit.setReadOnly(True)
+        layout.addWidget(item_info_text_edit, 1, 0)
 
-        edit = QPushButton(parent=new_frame)
-        edit.setMinimumSize(self.edit.minimumSize())
-        edit.setMaximumSize(self.edit.maximumSize())
-        edit.setObjectName("edit")
-        edit.setText("edit")
-        edit.setEnabled(True)
-        edit.clicked.connect(self.edit_entry)
-        layout.addWidget(edit, 1, 1)
+        delete_button = QPushButton(parent=new_frame)
+        delete_button.setMinimumSize(self.delete.minimumSize())
+        delete_button.setMaximumSize(self.delete.maximumSize())
+        delete_button.setObjectName("delete")
+        delete_button.setText("delete")
+        layout.addWidget(delete_button, 1, 1)
 
-        copy = QPushButton(parent=new_frame)
-        copy.setMinimumSize(self.copy.minimumSize())
-        copy.setMaximumSize(self.copy.maximumSize())
-        copy.setObjectName("copy")
-        copy.setText("copy")
-        copy.clicked.connect(self.copy_entry_to_clipboard)
-        layout.addWidget(copy, 1, 2)
 
-        delete = QPushButton(parent=new_frame)
-        delete.setMinimumSize(self.delete.minimumSize())
-        delete.setMaximumSize(self.delete.maximumSize())
-        delete.setObjectName("delete")
-        delete.setText("delete")
-        layout.addWidget(delete, 1, 3)
-        delete.clicked.connect(self.delete_entry)
+        edit_button = QPushButton(parent=new_frame)
+        edit_button.setMinimumSize(self.edit.minimumSize())
+        edit_button.setMaximumSize(self.edit.maximumSize())
+        edit_button.setObjectName("edit")
+        edit_button.setText("edit")
+        edit_button.setEnabled(True)
+        edit_button.clicked.connect(self.show_edit_dialog)
+        layout.addWidget(edit_button, 1, 2)
+
+        copy_button = QPushButton(parent=new_frame)
+        copy_button.setMinimumSize(self.copy.minimumSize())
+        copy_button.setMaximumSize(self.copy.maximumSize())
+        copy_button.setObjectName("copy")
+        copy_button.setText("copy")
+        copy_button.clicked.connect(self.copy_entry_to_clipboard)
+        layout.addWidget(copy_button, 1, 3)
+
+ 
+       
+        delete_button.clicked.connect(self.delete_entry)
 
         self.scrollable.addWidget(new_frame)
 
-
     def delete_entry(self):
+        
         sender = self.sender()
         entry = sender.parent()
+        if entry.objectName() == "basic_frame_template":
+            # do not delete the template
+            return
         entry.deleteLater()
 
     def copy_entry_to_clipboard(self):
-
+        print("copy")
         sender = self.sender()
         entry = sender.parent()
-        item_info = entry.findChild(QTextEdit, "item_info")
-        self.clipboard.setText(item_info.toPlainText())
-        print("copied")
+        item_info_text_edit = entry.findChild(QTextEdit, "item_info")
+        self.clipboard.setText(item_info_text_edit.toPlainText())
+     
 
 if __name__ == "__main__":
     import sys

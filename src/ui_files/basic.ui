@@ -105,19 +105,6 @@
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="item_name">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>90</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>item_name</string>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="0">
           <widget class="QTextEdit" name="item_info">
            <property name="minimumSize">
@@ -131,6 +118,57 @@
              <width>270</width>
              <height>35</height>
             </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="item_name">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>90</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>item_name</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QPushButton" name="copy">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>copy</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QPushButton" name="delete">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>delete</string>
            </property>
           </widget>
          </item>
@@ -150,44 +188,6 @@
            </property>
            <property name="text">
             <string>edit</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QPushButton" name="copy">
-           <property name="minimumSize">
-            <size>
-             <width>60</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>60</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>copy</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="3">
-          <widget class="QPushButton" name="delete">
-           <property name="minimumSize">
-            <size>
-             <width>60</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>60</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>delete</string>
            </property>
           </widget>
          </item>
