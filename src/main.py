@@ -1,4 +1,6 @@
 from PyQt6.QtWidgets import QMainWindow, QApplication, QFrame, QLabel, QTextEdit, QPushButton, QGridLayout, QDialog,QMessageBox
+from PyQt6.QtGui import QPixmap, QIcon
+from PyQt6.QtCore import Qt
 import json
 import os
 from ui_generated.basic import Ui_CopyPasta
@@ -8,23 +10,31 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         super().__init__()
         self.setupUi(self)
         self.add_field.clicked.connect(self.show_add_dialog)
-        self.edit.clicked.connect(self.show_edit_dialog)
-        self.item_info.setReadOnly(True)
-        self.delete.setDisabled(True)
-        self.copy.clicked.connect(self.copy_entry_to_clipboard)
+        self.basic_frame_template.hide()
         self.clipboard = QApplication.clipboard()
         self.data_dir = r"src/user_data"
         self.data_file = os.path.join(self.data_dir, "data.json")
-        self.huge=3
+        self.huge=69
+        self.frames=[]
         self.load_data()
-   
+        self.label.setPixmap(QPixmap(r"src\ui_files\icons\title.png"))
+        self.label.setScaledContents(True)
+
+        self.setWindowTitle("CopyPasta")
+        self.setWindowIcon(QIcon(r"src\ui_files\icons\icon.png"))
+
 
     def show_add_dialog(self):
         dialog = AddEditDialog(self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             item_name, field_value = dialog.get_item_data()
-            self.create_form_entry(item_name, field_value)
-            self.save_data()
+            if not item_name.strip() and not field_value.strip():
+                QMessageBox.critical(self, "Invalid Input", "Item name and field value cannot be empty.")
+               
+                self.show_add_dialog()
+            else:
+                self.create_form_entry(item_name, field_value)
+                self.save_data()
 
     def show_edit_dialog(self):
         dialog = AddEditDialog(self)
@@ -36,7 +46,7 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         dialog.field_value_input.setPlainText(item_info_text_edit.toPlainText())
         if dialog.exec() == QDialog.DialogCode.Accepted:
             item_name, field_value = dialog.get_item_data()
-
+         
             if not item_name.strip() and not field_value.strip():
                 QMessageBox.critical(self, "Invalid Input", "Item name and field value cannot be empty.")
                 # reopens the dialog
@@ -54,7 +64,7 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         new_frame.setFrameShadow(QFrame.Shadow.Raised)
         new_frame.setObjectName(f'my_{self.huge}_frame')
         self.huge+=1
-
+        self.frames.append(new_frame)
         layout = QGridLayout(new_frame)
 
         item_name_label = QLabel(parent=new_frame)
@@ -106,9 +116,11 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         entry = sender.parent()
         if entry.objectName() == "basic_frame_template":
             # do not delete the template
-            return
-        entry.deleteLater()
-        self.save_data()
+            pass
+        if entry.objectName().startswith("my_"):
+            self.frames.remove(entry)
+            entry.deleteLater()
+            self.save_data()
 
     def copy_entry_to_clipboard(self):
 
@@ -116,28 +128,27 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         entry = sender.parent()
         item_info_text_edit = entry.findChild(QTextEdit, "item_info")
         self.clipboard.setText(item_info_text_edit.toPlainText())
-        print("copied")
+        print("Copied to clipboard")
 
     def save_data(self):
         data = []
-        # iterate over all the frames
-     
-        for frame in self.scrollAreaWidgetContents.children():
-            if frame.objectName() == "basic_frame_template":
-        
-                item_name_label = frame.findChild(QLabel, "item_name")
-                item_info_text_edit = frame.findChild(QTextEdit, "item_info")
-                item_name = item_name_label.text()
-                item_info = item_info_text_edit.toPlainText()
-                data.append({"item_name": item_name, "item_info": item_info})
-            elif frame.objectName().startswith("my_"):
-                item_name_label = frame.findChild(QLabel, "item_name")
-                item_info_text_edit = frame.findChild(QTextEdit, "item_info")
-                item_name = item_name_label.text()
-                item_info = item_info_text_edit.toPlainText()
-                data.append({"item_name": item_name, "item_info": item_info})
-        with open(self.data_file, "w") as file:
-            json.dump(data, file, indent=4)
+
+        if len(self.frames)>=1:
+            # iterate over all the frames
+            for frame in self.frames:
+                if frame.objectName() == "basic_frame_template":
+                    continue
+                elif frame.objectName().startswith("my_"):
+                    item_name_label = frame.findChild(QLabel, "item_name")
+                    item_info_text_edit = frame.findChild(QTextEdit, "item_info")
+                    item_name = item_name_label.text()
+                    item_info = item_info_text_edit.toPlainText()
+                    data.append({"item_name": item_name, "item_info": item_info})
+            with open(self.data_file, "w") as file:
+                json.dump(data, file, indent=4)
+        else:
+            with open(self.data_file, "w") as file:
+                json.dump(data, file, indent=4)
 
             
 
@@ -162,5 +173,6 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
     mainWindow = MainWindow()
+    app.setStyle("Fusion")
     mainWindow.show()
     sys.exit(app.exec())

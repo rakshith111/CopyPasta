@@ -6,44 +6,49 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>530</width>
-    <height>600</height>
+    <width>600</width>
+    <height>830</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>510</width>
-    <height>600</height>
+    <width>600</width>
+    <height>830</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>530</width>
-    <height>600</height>
+    <width>600</width>
+    <height>830</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>12</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>CopyPasta</string>
   </property>
   <widget class="QWidget" name="main_window">
    <widget class="QScrollArea" name="scrollArea">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>20</y>
-      <width>490</width>
+      <x>40</x>
+      <y>260</y>
+      <width>520</width>
       <height>551</height>
      </rect>
     </property>
     <property name="minimumSize">
      <size>
-      <width>490</width>
+      <width>520</width>
       <height>200</height>
      </size>
     </property>
     <property name="maximumSize">
      <size>
-      <width>490</width>
+      <width>520</width>
       <height>600</height>
      </size>
     </property>
@@ -53,29 +58,38 @@
      </font>
     </property>
     <property name="widgetResizable">
-     <bool>true</bool>
+     <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignJustify|Qt::AlignVCenter</set>
     </property>
     <widget class="QWidget" name="scrollAreaWidgetContents">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>488</width>
+       <width>518</width>
        <height>549</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="scrollable">
       <item>
        <widget class="QPushButton" name="add_field">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>450</width>
+          <width>500</width>
           <height>30</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>450</width>
+          <width>500</width>
           <height>30</height>
          </size>
         </property>
@@ -196,6 +210,31 @@
       </item>
      </layout>
     </widget>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>10</y>
+      <width>550</width>
+      <height>230</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>550</width>
+      <height>230</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>550</width>
+      <height>200</height>
+     </size>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
    </widget>
   </widget>
  </widget>
