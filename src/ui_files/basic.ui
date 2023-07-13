@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>CopyPasta</class>
+ <widget class="QMainWindow" name="CopyPasta">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -25,26 +25,26 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="main_window">
    <widget class="QScrollArea" name="scrollArea">
     <property name="geometry">
      <rect>
       <x>30</x>
       <y>20</y>
       <width>490</width>
-      <height>201</height>
+      <height>551</height>
      </rect>
     </property>
     <property name="minimumSize">
      <size>
       <width>490</width>
-      <height>0</height>
+      <height>200</height>
      </size>
     </property>
     <property name="maximumSize">
      <size>
       <width>490</width>
-      <height>500</height>
+      <height>600</height>
      </size>
     </property>
     <property name="font">
@@ -61,16 +61,35 @@
        <x>0</x>
        <y>0</y>
        <width>488</width>
-       <height>199</height>
+       <height>549</height>
       </rect>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QVBoxLayout" name="scrollable">
+      <item>
+       <widget class="QPushButton" name="add_field">
+        <property name="minimumSize">
+         <size>
+          <width>450</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>450</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Add field</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QFrame" name="basic_frame_template">
         <property name="minimumSize">
          <size>
           <width>470</width>
-          <height>0</height>
+          <height>90</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -154,7 +173,7 @@
           </widget>
          </item>
          <item row="1" column="3">
-          <widget class="QPushButton" name="delete_2">
+          <widget class="QPushButton" name="delete">
            <property name="minimumSize">
             <size>
              <width>60</width>
@@ -173,25 +192,6 @@
           </widget>
          </item>
         </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="minimumSize">
-         <size>
-          <width>465</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>465</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Add field</string>
-        </property>
        </widget>
       </item>
      </layout>
