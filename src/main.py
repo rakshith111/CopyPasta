@@ -1,31 +1,7 @@
-from PyQt6.QtWidgets import QMainWindow, QApplication, QFrame, QLabel, QTextEdit, QPushButton, QGridLayout, QDialog, QVBoxLayout, QDialogButtonBox, QLineEdit
+from PyQt6.QtWidgets import QMainWindow, QApplication, QFrame, QLabel, QTextEdit, QPushButton, QGridLayout, QDialog,QMessageBox
+
 from ui_generated.basic import Ui_CopyPasta
-from PyQt6 import QtWidgets
-class AddEditDialog(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Add/Edit Item")
-        self.layout = QVBoxLayout(self)
-        self.item_name_label = QLabel("Item Name:", self)
-        self.item_name_input = QLineEdit(self)
-        self.field_value_label = QLabel("Field Value:", self)
-        self.field_value_input = QTextEdit(self)
-        self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel, self)
-
-        self.layout.addWidget(self.item_name_label)
-        self.layout.addWidget(self.item_name_input)
-        self.layout.addWidget(self.field_value_label)
-        self.layout.addWidget(self.field_value_input)
-        self.layout.addWidget(self.button_box)
-
-        self.button_box.accepted.connect(self.accept)
-        self.button_box.rejected.connect(self.reject)
-
-    def get_item_data(self):
-        item_name = self.item_name_input.text()
-        field_value = self.field_value_input.toPlainText()
-        return item_name, field_value
-
+from add_widget import AddEditDialog
 class MainWindow(QMainWindow, Ui_CopyPasta):
     def __init__(self):
         super().__init__()
@@ -53,10 +29,9 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         dialog.field_value_input.setPlainText(item_info_text_edit.toPlainText())
         if dialog.exec() == QDialog.DialogCode.Accepted:
             item_name, field_value = dialog.get_item_data()
-            print(item_name, field_value)
-            print("a")
+
             if not item_name.strip() and not field_value.strip():
-                QtWidgets.QMessageBox.critical(self, "Invalid Input", "Item name and field value cannot be empty.")
+                QMessageBox.critical(self, "Invalid Input", "Item name and field value cannot be empty.")
                 # reopens the dialog
                 self.show_edit_dialog()
             else:
@@ -110,10 +85,8 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         copy_button.setObjectName("copy")
         copy_button.setText("copy")
         copy_button.clicked.connect(self.copy_entry_to_clipboard)
-        layout.addWidget(copy_button, 1, 3)
+        layout.addWidget(copy_button, 1, 3)       
 
- 
-       
         delete_button.clicked.connect(self.delete_entry)
 
         self.scrollable.addWidget(new_frame)
@@ -128,7 +101,7 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         entry.deleteLater()
 
     def copy_entry_to_clipboard(self):
-        print("copy")
+
         sender = self.sender()
         entry = sender.parent()
         item_info_text_edit = entry.findChild(QTextEdit, "item_info")
