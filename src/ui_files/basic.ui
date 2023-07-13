@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>510</width>
+    <width>530</width>
     <height>600</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>510</width>
+    <width>530</width>
     <height>600</height>
    </size>
   </property>
@@ -31,19 +31,19 @@
      <rect>
       <x>30</x>
       <y>20</y>
-      <width>480</width>
+      <width>490</width>
       <height>201</height>
      </rect>
     </property>
     <property name="minimumSize">
      <size>
-      <width>460</width>
+      <width>490</width>
       <height>0</height>
      </size>
     </property>
     <property name="maximumSize">
      <size>
-      <width>460</width>
+      <width>490</width>
       <height>500</height>
      </size>
     </property>
@@ -60,22 +60,22 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>478</width>
+       <width>488</width>
        <height>199</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QFrame" name="frame">
+       <widget class="QFrame" name="basic_frame_template">
         <property name="minimumSize">
          <size>
-          <width>440</width>
+          <width>470</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>440</width>
+          <width>470</width>
           <height>90</height>
          </size>
         </property>
@@ -103,7 +103,7 @@
           <widget class="QTextEdit" name="item_info">
            <property name="minimumSize">
             <size>
-             <width>270</width>
+             <width>240</width>
              <height>35</height>
             </size>
            </property>
@@ -112,6 +112,25 @@
              <width>270</width>
              <height>35</height>
             </size>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="edit">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>edit</string>
            </property>
           </widget>
          </item>
@@ -134,8 +153,14 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="2">
-          <widget class="QPushButton" name="edit">
+         <item row="1" column="3">
+          <widget class="QPushButton" name="delete_2">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>30</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>60</width>
@@ -143,7 +168,7 @@
             </size>
            </property>
            <property name="text">
-            <string>edit</string>
+            <string>delete</string>
            </property>
           </widget>
          </item>
@@ -154,13 +179,13 @@
        <widget class="QPushButton" name="pushButton">
         <property name="minimumSize">
          <size>
-          <width>440</width>
+          <width>465</width>
           <height>30</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>440</width>
+          <width>465</width>
           <height>30</height>
          </size>
         </property>
