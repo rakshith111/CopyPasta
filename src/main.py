@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QMainWindow, QApplication, QFrame, QLabel, QTextEdit, QPushButton, QGridLayout, QDialog,QMessageBox
-
+import json
+import os
 from ui_generated.basic import Ui_CopyPasta
 from add_widget import AddEditDialog
 class MainWindow(QMainWindow, Ui_CopyPasta):
@@ -12,12 +13,18 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         self.delete.setDisabled(True)
         self.copy.clicked.connect(self.copy_entry_to_clipboard)
         self.clipboard = QApplication.clipboard()
+        self.data_dir = r"src/user_data"
+        self.data_file = os.path.join(self.data_dir, "data.json")
+        self.huge=3
+        self.load_data()
+   
 
     def show_add_dialog(self):
         dialog = AddEditDialog(self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             item_name, field_value = dialog.get_item_data()
             self.create_form_entry(item_name, field_value)
+            self.save_data()
 
     def show_edit_dialog(self):
         dialog = AddEditDialog(self)
@@ -37,7 +44,7 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
             else:
                 item_name_label.setText(item_name)
                 item_info_text_edit.setPlainText(field_value)
-
+                self.save_data()
 
     def create_form_entry(self, item_name, field_value):
         new_frame = QFrame(parent=self.scrollAreaWidgetContents)
@@ -45,6 +52,8 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         new_frame.setMaximumSize(self.basic_frame_template.maximumSize())
         new_frame.setFrameShape(QFrame.Shape.StyledPanel)
         new_frame.setFrameShadow(QFrame.Shadow.Raised)
+        new_frame.setObjectName(f'my_{self.huge}_frame')
+        self.huge+=1
 
         layout = QGridLayout(new_frame)
 
@@ -69,7 +78,7 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         delete_button.setText("delete")
         layout.addWidget(delete_button, 1, 1)
 
-
+ 
         edit_button = QPushButton(parent=new_frame)
         edit_button.setMinimumSize(self.edit.minimumSize())
         edit_button.setMaximumSize(self.edit.maximumSize())
@@ -85,7 +94,7 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         copy_button.setObjectName("copy")
         copy_button.setText("copy")
         copy_button.clicked.connect(self.copy_entry_to_clipboard)
-        layout.addWidget(copy_button, 1, 3)       
+        layout.addWidget(copy_button, 1, 3)
 
         delete_button.clicked.connect(self.delete_entry)
 
@@ -99,6 +108,7 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
             # do not delete the template
             return
         entry.deleteLater()
+        self.save_data()
 
     def copy_entry_to_clipboard(self):
 
@@ -106,6 +116,45 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         entry = sender.parent()
         item_info_text_edit = entry.findChild(QTextEdit, "item_info")
         self.clipboard.setText(item_info_text_edit.toPlainText())
+        print("copied")
+
+    def save_data(self):
+        data = []
+        # iterate over all the frames
+     
+        for frame in self.scrollAreaWidgetContents.children():
+            if frame.objectName() == "basic_frame_template":
+        
+                item_name_label = frame.findChild(QLabel, "item_name")
+                item_info_text_edit = frame.findChild(QTextEdit, "item_info")
+                item_name = item_name_label.text()
+                item_info = item_info_text_edit.toPlainText()
+                data.append({"item_name": item_name, "item_info": item_info})
+            elif frame.objectName().startswith("my_"):
+                item_name_label = frame.findChild(QLabel, "item_name")
+                item_info_text_edit = frame.findChild(QTextEdit, "item_info")
+                item_name = item_name_label.text()
+                item_info = item_info_text_edit.toPlainText()
+                data.append({"item_name": item_name, "item_info": item_info})
+        with open(self.data_file, "w") as file:
+            json.dump(data, file, indent=4)
+
+            
+
+    def load_data(self):
+        try:
+            with open(self.data_file, "r") as file:
+                data = json.load(file)
+                for item in data:
+                    item_name = item["item_name"]
+                    item_info = item["item_info"]
+                    self.create_form_entry(item_name, item_info)
+        except FileNotFoundError:
+            if not os.path.exists(self.data_dir):
+                os.mkdir(self.data_dir)
+            with open(self.data_file, "w") as file:
+                data={}
+                json.dump(data, file, indent=4)
      
 
 if __name__ == "__main__":
