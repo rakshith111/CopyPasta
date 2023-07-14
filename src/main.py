@@ -3,6 +3,8 @@ from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt
 import json
 import os
+import sys
+
 from ui_generated.basic import Ui_CopyPasta
 from add_widget import AddEditDialog
 class MainWindow(QMainWindow, Ui_CopyPasta):
@@ -19,17 +21,34 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         self.add_field.clicked.connect(self.show_add_dialog)
         self.basic_frame_template.hide()
         self.clipboard = QApplication.clipboard()
-        self.data_dir = r"src/user_data"
-        self.data_file = os.path.join(self.data_dir, "data.json")
-        self.huge=69
-        self.frames=[]
+        self.data_dir = os.path.join('src','user_data')
+        os.makedirs(self.data_dir, exist_ok=True)
+        self.data_file = os.path.normpath(os.path.join(self.data_dir, "data.json"))
+        self.huge = 69
+        self.frames = []
         self.load_data()
-        self.label.setPixmap(QPixmap(r"src\ui_files\icons\title.png"))
         self.label.setScaledContents(True)
-
         self.setWindowTitle("CopyPasta")
-        self.setWindowIcon(QIcon(r"src\ui_files\icons\icon.png"))
+        self.resource_path()   
 
+    def resource_path(self):
+        '''
+        Sets the path to the resource folder.
+         return os.path.join(base_path, relative_path)
+        '''
+        if hasattr(sys, '_MEIPASS'):
+        
+            # Bundled with PyInstaller
+            base_path = sys._MEIPASS
+  
+            self.label.setPixmap(QPixmap(os.path.join(base_path,"src","ui_files","icons","title.png")))
+            self.setWindowIcon(QIcon(os.path.join(base_path,"src","ui_files","icons","icon.png")))
+
+        else:
+            base_path = os.path.abspath(os.path.dirname(__file__))
+            self.label.setPixmap(QPixmap(os.path.join("src","ui_files","icons","title.png")))
+            self.setWindowIcon(QIcon(os.path.join("src","ui_files","icons","icon.png")))
+       
 
     def show_add_dialog(self):
         '''
