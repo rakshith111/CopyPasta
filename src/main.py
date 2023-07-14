@@ -20,12 +20,36 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         self.data_dir = os.path.join(QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppLocalDataLocation), 'user_data')
         os.makedirs(self.data_dir, exist_ok=True)
         self.data_file = os.path.join(self.data_dir, "data.json")
+        self.search_field.setPlaceholderText("Search Field...")
         self.huge = 69
         self.frames = []
         self.load_data()
         self.label.setScaledContents(True)
         self.setWindowTitle("CopyPasta")
         self.resource_path()   
+        self.search_btn.clicked.connect(self.search_entries)
+        self.reset_btn.clicked.connect(self.reset_search)
+
+    def search_entries(self):
+        search_text = self.search_field.toPlainText().strip().lower()
+
+        if not search_text:
+            return
+
+        for frame in self.frames:
+            if frame.objectName().startswith("my_"):
+                item_name_label = frame.findChild(QLabel, "item_name")
+                if search_text in item_name_label.text().lower():
+                    frame.setVisible(True)
+                else:
+                    frame.setVisible(False)
+
+    def reset_search(self):
+        self.search_field.clear()
+
+        for frame in self.frames:
+            if frame.objectName().startswith("my_"):
+                frame.setVisible(True)
 
     def resource_path(self):
         '''
