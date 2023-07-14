@@ -17,7 +17,7 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         self.add_field.clicked.connect(self.show_add_dialog)
         self.basic_frame_template.hide()
         self.clipboard = QApplication.clipboard()
-        self.data_dir = os.path.join(QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppLocalDataLocation), 'CopyPasta')
+        self.data_dir = os.path.join(QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppLocalDataLocation), 'user_data')
         os.makedirs(self.data_dir, exist_ok=True)
         self.data_file = os.path.join(self.data_dir, "data.json")
         self.huge = 69
