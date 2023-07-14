@@ -3,12 +3,11 @@ import os
 import sys
 from PyQt6.QtWidgets import QMainWindow, QApplication, QFrame, QLabel, QTextEdit, QPushButton, QGridLayout, QDialog,QMessageBox
 from PyQt6.QtGui import QPixmap, QIcon
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt,QEvent, QStandardPaths
 
 
 from ui_generated.basic import Ui_CopyPasta
 from add_widget import AddEditDialog
-from PyQt6.QtCore import QStandardPaths
 
 class MainWindow(QMainWindow, Ui_CopyPasta):
     def __init__(self):
@@ -17,7 +16,8 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         self.add_field.clicked.connect(self.show_add_dialog)
         self.basic_frame_template.hide()
         self.clipboard = QApplication.clipboard()
-        self.data_dir = os.path.join(QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppLocalDataLocation), 'user_data')
+        self.data_dir = os.path.normpath(os.path.join(QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppLocalDataLocation), 'user_data'))
+
         os.makedirs(self.data_dir, exist_ok=True)
         self.data_file = os.path.join(self.data_dir, "data.json")
         self.search_field.setPlaceholderText("Search Field...")
@@ -29,8 +29,24 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
         self.resource_path()   
         self.search_btn.clicked.connect(self.search_entries)
         self.reset_btn.clicked.connect(self.reset_search)
+        self.search_field.installEventFilter(self)
 
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Type.KeyPress:
+            if obj is self.search_field:
+                if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
+                    self.search_entries()
+                    return True
+            elif isinstance(obj, AddEditDialog):
+                if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
+                    obj.accept()
+                    return True
+        return super().eventFilter(obj, event)
+    
     def search_entries(self):
+        '''
+        Searches the entries.
+        '''        
         search_text = self.search_field.toPlainText().strip().lower()
 
         if not search_text:
@@ -45,6 +61,10 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
                     frame.setVisible(False)
 
     def reset_search(self):
+        '''
+        Resets the search field.
+        And shows all the entries.
+        '''        
         self.search_field.clear()
 
         for frame in self.frames:

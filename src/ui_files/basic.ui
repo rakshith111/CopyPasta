@@ -75,13 +75,13 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>500</width>
+          <width>480</width>
           <height>120</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>500</width>
+          <width>480</width>
           <height>120</height>
          </size>
         </property>
@@ -203,13 +203,13 @@
        <widget class="QFrame" name="basic_frame_template">
         <property name="minimumSize">
          <size>
-          <width>470</width>
+          <width>480</width>
           <height>90</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>470</width>
+          <width>480</width>
           <height>90</height>
          </size>
         </property>
