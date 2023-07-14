@@ -1,29 +1,25 @@
-from PyQt6.QtWidgets import QMainWindow, QApplication, QFrame, QLabel, QTextEdit, QPushButton, QGridLayout, QDialog,QMessageBox
-from PyQt6.QtGui import QPixmap, QIcon
-from PyQt6.QtCore import Qt
 import json
 import os
 import sys
+from PyQt6.QtWidgets import QMainWindow, QApplication, QFrame, QLabel, QTextEdit, QPushButton, QGridLayout, QDialog,QMessageBox
+from PyQt6.QtGui import QPixmap, QIcon
+from PyQt6.QtCore import Qt
+
 
 from ui_generated.basic import Ui_CopyPasta
 from add_widget import AddEditDialog
-class MainWindow(QMainWindow, Ui_CopyPasta):
-    '''
-    Main window of the application.
+from PyQt6.QtCore import QStandardPaths
 
-    Args:
-        QMainWindow (QMainWindow): Main window class.
-        Ui_CopyPasta (Ui_CopyPasta): Generated UI class.
-    '''    
+class MainWindow(QMainWindow, Ui_CopyPasta):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.add_field.clicked.connect(self.show_add_dialog)
         self.basic_frame_template.hide()
         self.clipboard = QApplication.clipboard()
-        self.data_dir = os.path.join('src','user_data')
+        self.data_dir = os.path.join(QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppLocalDataLocation), 'CopyPasta')
         os.makedirs(self.data_dir, exist_ok=True)
-        self.data_file = os.path.normpath(os.path.join(self.data_dir, "data.json"))
+        self.data_file = os.path.join(self.data_dir, "data.json")
         self.huge = 69
         self.frames = []
         self.load_data()
@@ -33,21 +29,18 @@ class MainWindow(QMainWindow, Ui_CopyPasta):
 
     def resource_path(self):
         '''
-        Sets the path to the resource folder.
-         return os.path.join(base_path, relative_path)
-        '''
+        Gets the resource path. 
+        Looks for the resource path in the sys._MEIPASS variable. When the program is bundled with PyInstaller, sys._MEIPASS is set to the path of the extracted data.
+
+        '''        
         if hasattr(sys, '_MEIPASS'):
-        
             # Bundled with PyInstaller
             base_path = sys._MEIPASS
-  
-            self.label.setPixmap(QPixmap(os.path.join(base_path,"src","ui_files","icons","title.png")))
-            self.setWindowIcon(QIcon(os.path.join(base_path,"src","ui_files","icons","icon.png")))
-
+            self.label.setPixmap(QPixmap(os.path.join(base_path, "src", "ui_files", "icons", "title.png")))
+            self.setWindowIcon(QIcon(os.path.join(base_path, "src", "ui_files", "icons", "icon.png")))
         else:
-            base_path = os.path.abspath(os.path.dirname(__file__))
-            self.label.setPixmap(QPixmap(os.path.join("src","ui_files","icons","title.png")))
-            self.setWindowIcon(QIcon(os.path.join("src","ui_files","icons","icon.png")))
+            self.label.setPixmap(QPixmap(os.path.join( "src", "ui_files", "icons", "title.png")))
+            self.setWindowIcon(QIcon(os.path.join( "src", "ui_files", "icons", "icon.png")))
        
 
     def show_add_dialog(self):
